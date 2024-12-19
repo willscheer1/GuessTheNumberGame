@@ -5,9 +5,10 @@ guesses allowed increases respectively. An option for hints is available to tell
 is higher or lower than the given guess. On game end, the user has the option to play again, change the difficulty,
 or exit the game.
 """ 
-
+from GameWindow import GameWindow
 
 
 
 if __name__ == "__main__":
-    pass
+    game = GameWindow()
+    game.run()

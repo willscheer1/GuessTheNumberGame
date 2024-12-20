@@ -28,6 +28,14 @@ class GameWindow:
         self.window.config(bg=self.bg_color)
 
         # widgets
+        # -top menu
+        menu_bar = tk.Menu(self.window)
+        options = tk.Menu(menu_bar, tearoff=0)
+        menu_bar.add_cascade(label="Game Options", menu=options)
+        options.add_command(label="New Game", command=self.back_to_menu)
+        options.add_command(label="Exit", command=self.window.destroy)
+        self.window.config(menu=menu_bar)
+
         # -game title
         self.game_title = tk.Label(self.window,
                                    bg=self.bg_color,
@@ -45,6 +53,20 @@ class GameWindow:
         
         # defaults to main menu on open
         self.menu = self.main_menu()
+
+    def back_to_menu(self):
+        """
+        Resets game window back to the main menu.
+        """
+        try:
+            game_frame = self.window.nametowidget("game_frame")
+        except:
+            pass
+        else:
+            game_frame.destroy()
+            self.window.nametowidget("game_message").destroy()
+            self.answer.config(text="?")
+            self.menu = self.main_menu()
 
     def main_menu(self):
         """
@@ -209,15 +231,6 @@ class GameWindow:
             """
             game_message_text.config(text=text, fg=color)
 
-        def play_again():
-            """
-            Resets the game back to the main menu.
-            """
-            game_frame.pack_forget()
-            game_message.place_forget()
-            self.answer.config(text="?")
-            self.menu.pack()
-
         # game variables
         upper_bound = get_upper_bound()
         winning_num = str(generate_number(upper_bound))
@@ -226,7 +239,8 @@ class GameWindow:
         # gameplay frame
         game_frame = tk.Frame(self.window,
                               width=500,
-                              bg=self.bg_color
+                              bg=self.bg_color,
+                              name="game_frame"
                               )
         # guess box label
         entry_box_label = tk.Label(game_frame,
@@ -302,7 +316,8 @@ class GameWindow:
         # game message (display range, 'You Win!' / 'You Lost :(' )
         game_message = tk.Frame(self.window,
                                 width=15,
-                                bg=self.bg_color
+                                bg=self.bg_color,
+                                name="game_message"
                                 )
         game_message_text = tk.Label(game_message,
                                      width=25,
@@ -318,7 +333,7 @@ class GameWindow:
         options_frame = tk.Frame(game_frame,
                                  bg=self.bg_color
                                  )
-        self.create_button(options_frame, "Play Again", play_again).pack(side="left", padx=10) # play again button
+        self.create_button(options_frame, "Play Again", self.back_to_menu).pack(side="left", padx=10) # play again button
         self.create_button(options_frame, "Exit", self.window.destroy).pack(side="right", padx=10)      # exit button
 
         # display game frame
